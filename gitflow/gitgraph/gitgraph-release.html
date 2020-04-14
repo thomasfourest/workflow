@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/@gitgraph/js"></script>
+  </head>
+  <body>
+    <div id="gitGraphRelease">
+      <h1>gitflow feature</h1>
+<script>
+// gitgraph conf
+var metroTemplateWithoutAuthor = GitgraphJS.templateExtend(GitgraphJS.TemplateName.Metro, {
+  commit: {
+    message: {
+      displayAuthor: false,
+      displayHash: false
+    },
+  },
+});
+var branchesOrder = ['master', 'release'];
+var compareBranchesOrder = function(a, b) {
+  return branchesOrder.indexOf(a) - branchesOrder.indexOf(b);
+};
+const graphContainer = document.getElementById("gitGraphRelease");
+const gitgraph = GitgraphJS.createGitgraph(graphContainer, {
+  template: metroTemplateWithoutAuthor,
+  orientation: GitgraphJS.Orientation.Vertical,
+  compareBranchesOrder: compareBranchesOrder
+});
+//const graphContainer = document.getElementById("gitGraph");
+//const gitgraph = GitgraphJS.createGitgraph(graphContainer);
+// branch master
+const master = gitgraph.branch("master");
+master.commit("");
+master.commit("").tag("2.0.1");
+// branch release
+const release = master.branch("51-release-2.0.1-bump-to-2.0.2");
+release
+  .commit("bump version 2.0.2");
+// merge release 
+master.merge(release, "version=2.0.2, ready for the futur release tagging");
+</script>
+    </div>
+
+  </body>
+</html>

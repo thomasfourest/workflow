@@ -1,0 +1,52 @@
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/@gitgraph/js"></script>
+  </head>
+  <body>
+    <div id="gitGraphPromoteProd">
+      <h1>gitflow feature</h1>
+<script>
+// gitgraph conf
+var metroTemplateWithoutAuthor = GitgraphJS.templateExtend(GitgraphJS.TemplateName.Metro, {
+  commit: {
+    message: {
+      displayAuthor: false,
+      displayHash: false
+    },
+  },
+});
+var branchesOrder = ['master', 'preprod', 'preproduc', 'prod', 'production'];
+var compareBranchesOrder = function(a, b) {
+  return branchesOrder.indexOf(a) - branchesOrder.indexOf(b);
+};
+const graphContainer = document.getElementById("gitGraphPromoteProd");
+const gitgraph = GitgraphJS.createGitgraph(graphContainer, {
+  template: metroTemplateWithoutAuthor,
+  orientation: GitgraphJS.Orientation.Vertical,
+  compareBranchesOrder: compareBranchesOrder
+});
+//const graphContainer = document.getElementById("gitGraph");
+//const gitgraph = GitgraphJS.createGitgraph(graphContainer);
+// branch master
+const master = gitgraph.branch("master");
+master.commit("");
+// branch preprod
+const preprod = master.branch("preprod");
+// branch prod
+const prod = master.branch("prod");
+// merge preprod
+master.commit("").tag("2.0.1");
+preprod.commit("");
+prod.commit("");
+master.merge(preprod, "merge on tag delivered");
+master.merge(prod, "merge on tag delivered");
+const preproduc = master.branch("preproduc");
+const production = master.branch("production");
+master.commit("commit c1");
+preproduc.commit("");
+production.commit("");
+</script>
+    </div>
+
+  </body>
+</html>

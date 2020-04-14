@@ -72,6 +72,11 @@ The other __short-live__ branches are used for features, bugs, fixes' developmen
 
 ![gitflow branches](/gitflow/branches1.png)
 
+You can also see the git log in graphic form :
+```
+git log --all --decorate --oneline --graph
+```
+
 ### Feature/bug/fix's development 
 
 ![add a feature](/gitflow/feature1.png)
@@ -109,16 +114,19 @@ git merge --no-ff 33-feature-export
 git push 
 ```
 
-### Release the product
+### Prepare Release Candidate for the product
 
 ![release](/gitflow/release1.png)
 
-First, create a __tag__ on the commit you identify for the release.
+First, create a __tag__ on the commit you identify for the release candidate.
 ```
-git tag -a $VERSION -m "RELEASE M.m.r"
+git tag -a $VERSION-rc1 345e5b5 -m "RELEASE CANDIDATE M.m.r-rc1"
 ```
 
-Preparing the upgarde of the product version number, create a __GitLab issue__ whith name *release-M.m.r-bump-to-M-m-r+1* and an associated __specific branch__ 
+And deliver your RELEASE-CANDIDATE docker image in registry (publishing with rc tag)...
+
+
+Preparing the upgrade of the product version number, create a __GitLab issue__ whith name *release-M.m.r-bump-to-M-m-r+1* and an associated __specific branch__ 
 ```
 # you can also create the specific branch via git commands
 git checkout -b 51-release-2.0.1-bump-to-2.0.2 master
@@ -157,23 +165,28 @@ git push
 
 ![promote on preprod](/gitflow/promotepreprod1.png)
 
-A monday, you want deliver your release in `preprod`, so...
+A monday, you want deliver your release candidate in `preprod`, so...
 
 Create a __merge request__ in GitLab on `preprod`, and merge whith __fast forward__:
 ```
 git fetch --tags origin
 git checkout preprod
-git merge 2.0.1
+git merge 2.0.1-rc1
 git push
 ```
 
-And deliver your docker image in registry.
+After QA validation, create a RELEASE __tag__ on the commit you have identified for the release candiate.
+```
+git tag -a $VERSION 345e5b5 -m "RELEASE CANDIDATE M.m.r"
+```
+
+And deliver your RELEASE docker image in registry (publishing with release tag)...
 
 Then, as time went on,
 
 ![promote on production](/gitflow/promoteproduction1.png)
 
-The monthe of sundays, you want deliver your release in `production`, so...
+The month of sundays, you want deliver your release in `production`, so...
 
 Create a __merge request__ in GitLab on `production`, and merge whith __fast forward__:
 ```
@@ -199,8 +212,8 @@ Add a __commit__ to bump the VERSION and __merge__ on `production` with __fast f
 vi VERSION
 git add VERSION
 git commit -m "bump version for fix 93"
-git tag -a 2.0.1-fix9
-git push3
+git tag -a 2.0.1-fix93
+git push
 # merge 
 git checkout production
 git merge 93-hotfix-burning
@@ -211,8 +224,8 @@ git push
 Finally, report the fix commit on `master`
 ```
 git checkout master
-git cherry-pisk commitFix93SHA
-git push
+git rebase production 
+git push --force
 ```
 
 ## Running the tests

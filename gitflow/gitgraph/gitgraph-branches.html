@@ -1,0 +1,56 @@
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/@gitgraph/js"></script>
+  </head>
+  <body>
+    <div id="gitGraphBranches">
+      <h1>gitflow branches</h1>
+<script>
+// gitgraph conf
+var metroTemplateWithoutAuthor = GitgraphJS.templateExtend(GitgraphJS.TemplateName.Metro, {
+  commit: {
+    message: {
+      displayAuthor: false,
+      displayHash: false
+    },
+  },
+});
+var branchesOrder = ['feature1', 'bug1', 'master', 'production'];
+var compareBranchesOrder = function(a, b) {
+  return branchesOrder.indexOf(a) - branchesOrder.indexOf(b);
+};
+const graphContainer = document.getElementById("gitGraphBranches");
+const gitgraph = GitgraphJS.createGitgraph(graphContainer, {
+  template: metroTemplateWithoutAuthor,
+  orientation: GitgraphJS.Orientation.Horizontal,
+  compareBranchesOrder: compareBranchesOrder
+});
+//const graphContainer = document.getElementById("gitGraph");
+//const gitgraph = GitgraphJS.createGitgraph(graphContainer);
+// branch master
+const master = gitgraph.branch("master");
+master.commit("m#0");
+// branch production
+const production = master.branch("production");
+// branch feature#1
+const feature1 = master.branch("feature-#1");
+feature1
+  .commit("f#1")
+  .commit("f#2");
+master.commit("m#1");
+// branch bug#1
+const bug1 = master.branch("bug-#1");
+bug1
+  .commit("b#1")
+  .commit("b#2");
+// merges and tags
+master.merge(bug1).tag("2.0.1");
+production.commit("hotfix#1").tag("2.0.0-hotfix1");
+master.commit("cherry-pick-hotfix#1");
+master.merge(production).tag("2.0.2");
+master.merge(feature1);
+master.commit("m#2");
+</script>
+    </div>
+  </body>
+</html>

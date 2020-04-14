@@ -1,0 +1,51 @@
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/@gitgraph/js"></script>
+  </head>
+  <body>
+    <div id="gitGraphFeature">
+      <h1>gitflow feature</h1>
+<script>
+// gitgraph conf
+var metroTemplateWithoutAuthor = GitgraphJS.templateExtend(GitgraphJS.TemplateName.Metro, {
+  commit: {
+    message: {
+      displayAuthor: false,
+      displayHash: false
+    },
+  },
+});
+var branchesOrder = ['fix1', 'feature1', 'master'];
+var compareBranchesOrder = function(a, b) {
+  return branchesOrder.indexOf(a) - branchesOrder.indexOf(b);
+};
+const graphContainer = document.getElementById("gitGraphFeature");
+const gitgraph = GitgraphJS.createGitgraph(graphContainer, {
+  template: metroTemplateWithoutAuthor,
+  orientation: GitgraphJS.Orientation.Vertical,
+  compareBranchesOrder: compareBranchesOrder
+});
+//const graphContainer = document.getElementById("gitGraph");
+//const gitgraph = GitgraphJS.createGitgraph(graphContainer);
+// branch master
+const master = gitgraph.branch("master");
+master.commit("");
+// branch fix#1
+const fix1 = master.branch("8-bug-oggy");
+fix1
+  .commit("commit x1");
+// branch feature#1
+const feature1 = master.branch("33-feature-export");
+feature1.commit("commit f1");
+
+// merge fix#1
+master.merge(fix1);
+
+// merge feature1
+feature1.commit("commit f2");
+master.merge(feature1, "Merge branch 33-feature-export after rebasing cause commit x1");
+</script>
+    </div>
+
+  </body>
+</html>

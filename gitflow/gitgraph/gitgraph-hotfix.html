@@ -1,0 +1,48 @@
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/@gitgraph/js"></script>
+  </head>
+  <body>
+    <div id="gitGraphHotfix">
+      <h1>gitflow feature</h1>
+<script>
+// gitgraph conf
+var metroTemplateWithoutAuthor = GitgraphJS.templateExtend(GitgraphJS.TemplateName.Metro, {
+  commit: {
+    message: {
+      displayAuthor: false,
+      displayHash: false
+    },
+  },
+});
+var branchesOrder = ['master', 'production', 'hotfix'];
+var compareBranchesOrder = function(a, b) {
+  return branchesOrder.indexOf(a) - branchesOrder.indexOf(b);
+};
+const graphContainer = document.getElementById("gitGraphHotfix");
+const gitgraph = GitgraphJS.createGitgraph(graphContainer, {
+  template: metroTemplateWithoutAuthor,
+  orientation: GitgraphJS.Orientation.Vertical,
+  compareBranchesOrder: compareBranchesOrder
+});
+//const graphContainer = document.getElementById("gitGraph");
+//const gitgraph = GitgraphJS.createGitgraph(graphContainer);
+// branch master
+const master = gitgraph.branch("master");
+master.commit("");
+// branch prod
+const prod = master.branch("production");
+prod.commit("");
+// branch hotfix
+const hotfix = prod.branch("hotfix");
+hotfix
+  .commit("commit hotfix")
+  .commit("fix version").tag("2.0.1-hotfix1");
+prod.merge(hotfix,"bump version to next version 2.0.1-hotfix2");
+master.commit("");
+
+</script>
+    </div>
+
+  </body>
+</html>
