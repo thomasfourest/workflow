@@ -1,0 +1,89 @@
+image: myharhor:9999/tomdevops/docker:19.03.1
+
+variables:
+  GIT_SSL_NO_VERIFY: '1'
+  DOCKER_HOST: 'unix:///var/run/docker.sock'
+
+  # https://gitlab.com/gitlab-org/gitlab-runner/issues/3748
+  # we must ensure that we trust gitlab ssl certificate before trying to clone project
+
+stages:
+  - check
+  - build
+  - publish
+  - qa
+  - release 
+  - delivery
+  - deploy
+
+info:
+  variables:
+    CI_DEBUG_TRACE: 'true'
+  stage: check
+  tags:
+    - docker
+  script:
+    - docker info
+
+build-nginxhello:
+  stage: build
+  script:
+    - make build
+  tags:
+    - docker
+
+publish-nginxhello:
+  stage: publish
+  script:
+    - make publish
+  tags:
+    - docker
+  only:
+    refs:
+      - master
+
+deploy-nginxhello-dev:
+  stage: qa 
+  script:
+    - echo "deploy in qa"
+  environment:
+    name: dev
+  needs: ["publish-nginxhello"]
+  when: manual
+  only:
+    refs:
+      - master 
+
+release-nginxhello:
+  stage: release
+  script:
+    - make release
+  tags:
+    - docker
+  when: manual
+  only:
+    refs:
+      - master
+
+delivery-nginxhello:
+  stage: delivery 
+  script:
+    - make delivery
+  tags:
+    - docker
+  when: manual
+  only:
+    refs:
+      - master
+
+deploy-nginxhello-prod:
+  stage: deploy 
+  script:
+    - echo "deploy in prod"
+  tags:
+    - docker
+  when: manual
+  only:
+    refs:
+      - production
+

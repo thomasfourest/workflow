@@ -1,0 +1,20 @@
+version: '3.7'
+services:
+  nginxhello:
+    # node based image
+    image: ${REGISTRY}/nginxhello:${VERSION}
+    container_name: nginxhello
+    restart: unless-stopped
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.nginxhello-local.rule=Host(`nginxhello.local`)'
+      - 'traefik.http.routers.nginxhello-dev.rule=Host(`referentiel-docker-recette.korian.cloud`)'
+      - 'traefik.docker.network=reverse-proxy'
+    networks:
+      - traefik
+# Declare traefik network to be able to link it to proxied containers
+# traefik need to know which subnet query should be forward
+networks:
+  traefik:
+    external:
+      name: reverse-proxy
