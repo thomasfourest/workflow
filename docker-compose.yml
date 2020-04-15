@@ -8,7 +8,7 @@ services:
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.nginxhello-local.rule=Host(`nginxhello.local`)'
-      - 'traefik.http.routers.nginxhello-dev.rule=Host(`referentiel-docker-recette.korian.cloud`)'
+      - 'traefik.http.routers.nginxhello-dev.rule=Host(`myVIP.fr`)'
       - 'traefik.docker.network=reverse-proxy'
     networks:
       - traefik
