@@ -11,7 +11,7 @@ It contains a nginx sample project which can be:
 
 :star: This worklow encourages you to write knowledge in the documentary space and instructions in README files.
 
-:books: Documentary space : https://gitlab.korian.cloud/developpement/documentation/-/wikis/home
+:books: Documentary space : 
 
 :writing_hand: Markdown instructions for readablity: https://docs.gitlab.com/ee/user/markdown.html
 
@@ -23,14 +23,14 @@ These instructions will get you a copy of the project up and running on your loc
 
 You need a recent version of __docker__ and __docker-compose__ in a *Linux* system.
 
-It will be better to have an access to the Korian network for the private docker registry and the deployment environments, but you can change the configuration of this project to push builded images on your private docker registry and deploy on your teamsi' machines.  
+It will be better to have an access to the network for the private docker registry and the deployment environments, but you can change the configuration of this project to push builded images on your private docker registry and deploy on your teamsi' machines.  
 
 ### Installing
 
 Get the project
 
 ```
-git clone https://gitlab.korian.cloud/developpement/interne/workflow.git
+git clone https://github.com/thomasfourest/workflow.git
 ```
 
 Build and publish the `nginxhello` image on docker registry 
@@ -50,7 +50,7 @@ make up
 To reach the resulted web page in the running docker container, better is to start the *traefic reverse proxy* project to expose the `nginxhello` container on the nginxhello.local route. 
 
 ```
-git clone https://gitlab.korian.cloud/developpement/interne/docker/docker-reverse-proxy.git
+git clone https://github.com/thomasfourest/docker-reverse-proxy.git
 cd docker-reverse-proxy
 make up
 ```
